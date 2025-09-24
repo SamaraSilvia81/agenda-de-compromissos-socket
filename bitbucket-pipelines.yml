@@ -1,10 +1,7 @@
-# >>>>> VERSÃO FINAL E FUNCIONAL <<<<<
-
 image: node:20
 
 pipelines:
   default:
-    # --- PASSO 1: TESTAR E VERIFICAR A QUALIDADE DO CÓDIGO ---
     - parallel:
         - step:
             name: Build and Test
@@ -20,13 +17,11 @@ pipelines:
             script:
               - yarn install
               - yarn eslint .
-
-    # --- PASSO 2: ESPELHAR PARA O GITHUB ---
     - step:
         name: Mirror to GitHub
         script:
           - mkdir -p ~/.ssh
-          - echo "${SSH_KEY}" > ~/.ssh/id_rsa
+          - echo "${SSH_KEY}" | base64 --decode > ~/.ssh/id_rsa
           - chmod 600 ~/.ssh/id_rsa
           - ssh-keyscan github.com >> ~/.ssh/known_hosts
           - git remote add github-mirror git@github.com:SamaraSilvia81/agenda-de-compromissos-socket.git
