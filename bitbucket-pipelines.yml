@@ -1,12 +1,33 @@
+# >>>>> VERSÃO FINAL E FUNCIONAL <<<<<
+
 image: node:20
+
 pipelines:
   default:
+    # --- PASSO 1: TESTAR E VERIFICAR A QUALIDADE DO CÓDIGO ---
+    - parallel:
+        - step:
+            name: Build and Test
+            caches:
+              - node
+            script:
+              - yarn install
+              - yarn test
+        - step:
+            name: Code Linting
+            caches:
+              - node
+            script:
+              - yarn install
+              - yarn eslint .
+
+    # --- PASSO 2: ESPELHAR PARA O GITHUB ---
     - step:
-        name: DEBUG - Verificando Chave
+        name: Mirror to GitHub
         script:
-          - echo 'Iniciando debug da chave SSH...'
-          - echo "${SSH_KEY}" > chave_privada.tmp
-          - chmod 600 chave_privada.tmp
-          - echo 'Chave publica gerada pela pipeline:'
-          - ssh-keygen -y -f chave_privada.tmp
-          - echo 'Debug finalizado.'
+          - mkdir -p ~/.ssh
+          - echo "${SSH_KEY}" > ~/.ssh/id_rsa
+          - chmod 600 ~/.ssh/id_rsa
+          - ssh-keyscan github.com >> ~/.ssh/known_hosts
+          - git remote add github-mirror git@github.com:SamaraSilvia81/agenda-de-compromissos-socket.git
+          - git push --all github-mirror
