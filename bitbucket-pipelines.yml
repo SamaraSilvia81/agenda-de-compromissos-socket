@@ -1,26 +1,45 @@
-image: node:16
+# Imagem base do Node.js para os passos de build e teste
+image: node:20
 
 pipelines:
   default:
+    # 1º Estágio: Rodar testes e lint em paralelo para ganhar tempo
     - parallel:
         - step:
             name: Build and Test
             caches:
               - node
             script:
-              - npm install
-              - npm test
+              - yarn install
+              - yarn test
         - step:
             name: Code Linting
             caches:
               - node
             script:
-              - npm install
-              - npx eslint .
+              - yarn install
+              - yarn eslint .
+              
+    # 2º Estágio: Espelhar para o GitHub (só roda se o estágio anterior passar)
     - step:
         name: Mirror to GitHub
         script:
-          - echo $SSH_KEY | base64 -d | ssh-agent -s
-          - ssh-add
+          - mkdir -p ~/.ssh
+          - echo "${SSH_KEY}" | base64 --decode > ~/.ssh/id_rsa
+          - chmod 600 ~/.ssh/id_rsa
+          - ssh-keyscan github.com >> ~/.ssh/known_hosts
           - git remote add github-mirror git@github.com:SamaraSilvia81/agenda-de-compromissos-socket.git
           - git push --all github-mirror
+
+    # 3º Estágio: Construir e enviar a imagem Docker (só roda se os anteriores passarem)
+    - step:
+        name: Build and Push to Docker Hub
+        services:
+          - docker
+        script:
+          # 1. Autentica no Docker Hub usando as variáveis de repositório
+          - echo $DOCKER_HUB_APP_PASSWORD | docker login --username $DOCKER_HUB_USER --password-stdin
+          # 2. Constrói a imagem Docker com a tag correta
+          - docker build -t samarasilvia81/agenda-de-compromissos-socket:latest .
+          # 3. Envia a imagem para o Docker Hub
+          - docker push samarasilvia81/agenda-de-compromissos-socket:latest
