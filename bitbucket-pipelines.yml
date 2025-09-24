@@ -20,7 +20,7 @@ pipelines:
     - step:
         name: Mirror to GitHub
         script:
-          - echo $SSH_KEY | base64 -d | ssh-agent -s
+          - eval $(echo $SSH_KEY | base64 -d | ssh-agent -s)
           - ssh-add
           - git remote add github-mirror git@github.com:SamaraSilvia81/agenda-de-compromissos-socket.git
           - git push --all github-mirror
