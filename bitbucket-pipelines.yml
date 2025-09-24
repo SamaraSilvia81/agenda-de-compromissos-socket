@@ -1,22 +1,12 @@
-# >>>>> CÓDIGO DE DEBUG - REMOVER APÓS O USO <<<<<
-
 image: node:20
-
 pipelines:
   default:
     - step:
-        name: DEBUG - Verificando Chaves SSH
+        name: DEBUG - Verificando Chave
         script:
-          - echo "PASSO 1: VERIFICANDO A CHAVE PRIVADA QUE O BITBUCKET TEM"
-          - echo "--------------------------------------------------------"
-          - echo "${SSH_KEY}"
-          - echo "--------------------------------------------------------"
-          - echo
-          - echo "PASSO 2: GERANDO A CHAVE PÚBLICA A PARTIR DA PRIVADA ACIMA"
-          - echo "--------------------------------------------------------"
-          # Os comandos abaixo criam um arquivo temporário com a chave privada e geram a pública a partir dela
-          - echo "${SSH_KEY}" > temp_private_key
-          - chmod 600 temp_private_key
-          - ssh-keygen -y -f temp_private_key
-          - echo "--------------------------------------------------------"
-          - echo "PASSO 3: COMPARE A CHAVE PÚBLICA ACIMA COM A QUE ESTÁ NO GITHUB"
+          - echo 'Iniciando debug da chave SSH...'
+          - echo "${SSH_KEY}" > chave_privada.tmp
+          - chmod 600 chave_privada.tmp
+          - echo 'Chave publica gerada pela pipeline:'
+          - ssh-keygen -y -f chave_privada.tmp
+          - echo 'Debug finalizado.'
