@@ -9,9 +9,9 @@ export function processUserInput(line) {
   const [command] = input.split(' ');
   const commandUpper = command.toUpperCase();
 
-  if (!validCommands.includes(commandUpper)) {
-    const errorMsg = `❌ Invalid command: "${command}". Try one of: ${validCommands.join(', ')}`;
-    return { success: false, error: errorMsg };
+   if (!validCommands.includes(commandUpper)) {
+    // Agora retorna um CÓDIGO de erro, não a mensagem
+    return { success: false, errorCode: 'INVALID_COMMAND' };
   }
 
   // --- Command-specific validation ---
@@ -20,24 +20,17 @@ export function processUserInput(line) {
       // Regex to capture arguments, allowing for quoted title and optional quoted description.
       // Groups: 1:date, 2:time, 3:duration, 4:title, 5:description(optional)
       const addRegex = /^ADD\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+"([^"]+)"(?:\s+"([^"]+)")?$/i;
-      const match = input.match(addRegex);
-
-      if (!match) {
-        const errorMsg = '❌ Incorrect format for ADD. Use: ADD <date> <time> <duration> "<title>" "[optional_description]"';
-        return { success: false, error: errorMsg };
+      if (!input.match(addRegex)) {
+        return { success: false, errorCode: 'INVALID_ADD_FORMAT' };
       }
-      
-      // If format is correct, proceed.
-      // Future validation for date/time format could be added here.
       break;
     }
 
     case 'LIST': {
       // Allows LIST, LIST <date>, or LIST ALL
       const listRegex = /^LIST(\s+[^\s]+)?$/i;
-      const match = input.match(listRegex);
-      if (!match) {
-        return { success: false, error: '❌ Incorrect format for LIST. Use: LIST, LIST <date>, or LIST ALL' };
+      if (!input.match(listRegex)) {
+        return { success: false, errorCode: 'INVALID_LIST_FORMAT' };
       }
       break;
     }
@@ -45,9 +38,8 @@ export function processUserInput(line) {
      case 'UPDATE': {
       // Expects UPDATE <id> <field> "<new_value>"
       const updateRegex = /^UPDATE\s+(\d+)\s+([^\s"]+)\s+"([^"]+)"$/i;
-      const match = input.match(updateRegex);
-      if (!match) {
-        return { success: false, error: '❌ Incorrect format for UPDATE. Use: UPDATE <id> <field> "<new_value>"' };
+      if (!input.match(updateRegex)) {
+        return { success: false, errorCode: 'INVALID_UPDATE_FORMAT' };
       }
       break;
     }
@@ -55,9 +47,8 @@ export function processUserInput(line) {
    case 'DELETE': {
       // Expects DELETE followed by a number (the ID)
       const deleteRegex = /^DELETE\s+\d+$/i;
-      const match = input.match(deleteRegex);
-      if (!match) {
-        return { success: false, error: '❌ Incorrect format for DELETE. Use: DELETE <id>' };
+      if (!input.match(deleteRegex)) {
+      return { success: false, errorCode: 'INVALID_DELETE_FORMAT' };
       }
       break;
     }

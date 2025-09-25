@@ -1,6 +1,7 @@
 import { Socket } from 'net';
 import { createInterface } from 'readline';
 import { processUserInput } from './commandHandler.js';
+import { handleError } from './errorHandler.js';
 
 // --- Configuration ---
 const HOST = '127.0.0.1';
@@ -49,7 +50,7 @@ client.on('close', () => {
 });
 
 client.on('error', (err) => {
-  console.error(`❌ Connection error: ${err.message}`);
+  handleError('CONNECTION_ERROR', err);
 });
 
 // --- Readline Event Handler ---
@@ -58,15 +59,12 @@ rl.on('line', (line) => {
   const result = processUserInput(line);
 
   if (result.success) {
-    // If the command is valid, send it to the server
-    console.log(`[DEBUG] Comando formatado: "${result.commandToSend.trim()}"`);
+    console.log(`[DEBUG] Command formated: "${result.commandToSend.trim()}"`);
     client.write(result.commandToSend);
-  } else if (result.error) {
-    // If it's invalid, show the error message and the prompt again
-    console.log(result.error);
+  } else if (result.errorCode) {
+    handleError(result.errorCode);
     rl.prompt();
   } else {
-    // If there's no input, just show the prompt again
     rl.prompt();
   }
 });
