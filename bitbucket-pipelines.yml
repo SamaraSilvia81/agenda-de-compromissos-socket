@@ -26,11 +26,11 @@ pipelines:
           - ssh-keyscan github.com >> ~/.ssh/known_hosts
           - git remote add github-mirror git@github.com:SamaraSilvia81/agenda-de-compromissos-socket.git
           - git push --all github-mirror
-    # - step:
-    #    name: Build and Push to Docker Hub
-    #    services:
-    #      - docker
-    #    script:
-    #      - echo $DOCKER_HUB_APP_PASSWORD | docker login --username $DOCKER_HUB_USER --password-stdin
-    #      - docker build -t samarasilvia81/agenda-de-compromissos-socket:latest .
-    #      - docker push samarasilvia81/agenda-de-compromissos-socket:latest
+     - step:
+        name: Build and Push to Docker Hub
+         services:
+          - docker
+        script:
+          - echo $DOCKER_HUB_APP_PASSWORD | docker login --username $DOCKER_HUB_USER --password-stdin
+          - docker build -t samarasilvia81/agenda-de-compromissos-socket:latest .
+          - docker push samarasilvia81/agenda-de-compromissos-socket:latest
