@@ -51,13 +51,16 @@ export function processUserInput(line) {
       }
       break;
     }
-    
-    case 'DELETE':
-      break;
 
-    default:
-      // Should not be reached due to the initial command validation.
+   case 'DELETE': {
+      // Expects DELETE followed by a number (the ID)
+      const deleteRegex = /^DELETE\s+\d+$/i;
+      const match = input.match(deleteRegex);
+      if (!match) {
+        return { success: false, error: '❌ Incorrect format for DELETE. Use: DELETE <id>' };
+      }
       break;
+    }
   }
 
   // If all checks pass, the command is valid.
