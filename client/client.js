@@ -35,7 +35,6 @@ client.on('data', (data) => {
     } else {
         console.log(jsonResponse);
     }
-    // Desativa a regra 'no-unused-vars' apenas para a linha seguinte
     // eslint-disable-next-line no-unused-vars
   } catch (_err) { // Using _error to avoid unused variable linting error
     console.log(serverResponse);
