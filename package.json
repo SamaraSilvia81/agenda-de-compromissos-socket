@@ -1,7 +1,8 @@
 {
   "name": "pd-01-agenda-socket",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "client.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 0"
   },
