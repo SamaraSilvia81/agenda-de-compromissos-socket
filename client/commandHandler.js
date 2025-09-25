@@ -42,7 +42,16 @@ export function processUserInput(line) {
       break;
     }
 
-    case 'UPDATE':
+     case 'UPDATE': {
+      // Expects UPDATE <id> <field> "<new_value>"
+      const updateRegex = /^UPDATE\s+(\d+)\s+([^\s"]+)\s+"([^"]+)"$/i;
+      const match = input.match(updateRegex);
+      if (!match) {
+        return { success: false, error: '❌ Incorrect format for UPDATE. Use: UPDATE <id> <field> "<new_value>"' };
+      }
+      break;
+    }
+    
     case 'DELETE':
       break;
 
