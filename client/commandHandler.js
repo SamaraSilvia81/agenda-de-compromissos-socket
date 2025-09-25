@@ -32,7 +32,16 @@ export function processUserInput(line) {
       break;
     }
 
-    case 'LIST':
+    case 'LIST': {
+      // Allows LIST, LIST <date>, or LIST ALL
+      const listRegex = /^LIST(\s+[^\s]+)?$/i;
+      const match = input.match(listRegex);
+      if (!match) {
+        return { success: false, error: '❌ Incorrect format for LIST. Use: LIST, LIST <date>, or LIST ALL' };
+      }
+      break;
+    }
+
     case 'UPDATE':
     case 'DELETE':
       break;
