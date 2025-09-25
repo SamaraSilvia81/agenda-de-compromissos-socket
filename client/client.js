@@ -1,6 +1,6 @@
 import { Socket } from 'net';
 import { createInterface } from 'readline';
-import { processUserInput } from './commandHandler.js'; // <-- IMPORTA NOSSA LÓGICA
+import { processUserInput } from './commandHandler.js';
 
 // --- Configuration ---
 const HOST = '127.0.0.1';
