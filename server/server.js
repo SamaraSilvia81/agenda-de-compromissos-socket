@@ -78,13 +78,25 @@ function handleAdd(fullCommand, socket) {
 }
 
 function handleList(fullCommand, socket) {
-    const parts = fullCommand.split(' '); 
+    const parts = fullCommand.split(' ');
     const filterArgument = parts[1];
 
     let results = appointments;
 
     if (filterArgument && filterArgument.toUpperCase() !== 'ALL') {
-        results = appointments.filter(app => app.date === filterArgument);
+        try {
+            const [fYear, fMonth, fDay] = filterArgument.split('-').map(Number);
+
+            results = appointments.filter(app => {
+                const [aYear, aMonth, aDay] = app.date.split('-').map(Number);
+                
+                // CORREÇÃO AQUI 👇
+                return aYear === fYear && aMonth === fMonth && aDay === fDay;
+            });
+        // eslint-disable-next-line no-unused-vars
+        } catch (e) {
+            results = [];
+        }
     }
 
     if (results.length === 0) {
