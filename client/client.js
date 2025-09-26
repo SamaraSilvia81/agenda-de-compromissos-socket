@@ -124,4 +124,5 @@ rl.on('line', (line) => {
 
 // --- Initial Connection ---
 console.log('Attempting to connect to the server...');
+console.log('\nAgradecemos por usar a Agenda Distribuída! Até a próxima. 👋');
 client.connect(PORT, HOST);
