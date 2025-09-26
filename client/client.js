@@ -104,6 +104,7 @@ rl.on('line', (line) => {
   }
   if (commandUpper === 'EXIT') {
     console.log('Disconnecting...');
+    console.log('\nAgradecemos por usar a Agenda Distribuída! Até a próxima. 👋');
     client.end();
     rl.close();
     return;
@@ -124,5 +125,4 @@ rl.on('line', (line) => {
 
 // --- Initial Connection ---
 console.log('Attempting to connect to the server...');
-console.log('\nAgradecemos por usar a Agenda Distribuída! Até a próxima. 👋');
 client.connect(PORT, HOST);
