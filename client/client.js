@@ -1,9 +1,40 @@
-// client/client.js
-
 import { Socket } from 'net';
 import { createInterface } from 'readline';
 import { processUserInput } from './commandHandler.js';
 import { handleError } from './errorHandler.js';
+
+// --- Display Functions ---
+function showWelcomeMessage() {
+  console.clear();
+  console.log("---------------------------------------------------------------------");
+  console.log(" Disciplina: Plataformas de Distribuição - UFPE (2025.2)");
+  console.log(" Professor: Nelson Souto (nsr@cin.ufpe.br)");
+  console.log(" Autores: Samara Silvia (sssc@cin.ufpe.br)");
+  console.log("          Rodolfo Machado (armc2@cin.ufpe.br)");
+  console.log("\n Título: Agenda de Compromissos Distribuída v1.0");
+  console.log("\n Descrição:");
+  console.log("   Esta é uma aplicação de linha de comando (CLI) que atua como um");
+  console.log("   cliente para um sistema de agenda compartilhada. Ela se comunica");
+  console.log("   via Sockets TCP com um servidor para manipular eventos em tempo real.");
+  console.log("\n Comandos disponíveis:");
+  console.log("   - HELP         (Veja a lista completa de comandos e seus formatos)");
+  console.log("   - CLEAR        (Limpe a tela do terminal)");
+  console.log("   - EXIT         (Encerre a aplicação)");
+  console.log("---------------------------------------------------------------------");
+}
+
+function showCommandTutorial() {
+  console.log("\n---------- Guia de Comandos da Agenda ----------");
+  console.log('\n➡️  ADD <data> <hora> <duração> "<título>" "[descrição]"');
+  console.log('    Ex: add 2025-09-26 10:00 60min "Reunião de Projeto"');
+  console.log('\n➡️  LIST <data | ALL>');
+  console.log('    Ex: list 2025-09-26');
+  console.log('\n➡️  UPDATE <id> <campo> "<novo_valor>"');
+  console.log('    Ex: update 42 titulo "Título da Reunião Atualizado"');
+  console.log('\n➡️  DELETE <id>');
+  console.log('    Ex: delete 42');
+  console.log("------------------------------------------------");
+}
 
 // --- Configuration ---
 const HOST = '127.0.0.1';
@@ -12,50 +43,28 @@ const PORT = 3000;
 // --- Initialization ---
 const client = new Socket();
 let isConnected = false;
-const rl = createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
+const rl = createInterface({ input: process.stdin, output: process.stdout });
 rl.setPrompt('\n> ');
 
-// --- Client-Side Command Handlers ---
-
-function displayHelp() {
-  console.log('\n--- Available Commands ---');
-  console.log('ADD <date> <time> <duration> "<title>" "[description]" - Add a new appointment.');
-  console.log('LIST [date]                                           - List all or filtered appointments.');
-  console.log('UPDATE <id> <field> "<new_value>"                     - Update an appointment.');
-  console.log('DELETE <id>                                           - Delete an appointment.');
-  console.log('HELP                                                  - Show this help message.');
-  console.log('CLEAR                                                 - Clear the console screen.');
-  console.log('EXIT                                                  - Disconnect and close the application.');
-  console.log('--------------------------');
-}
-
 // --- Client Event Handlers ---
-
 client.on('connect', () => {
   isConnected = true;
-  console.log('✅ Connected to the scheduler server!');
-  displayHelp(); // Show help on initial connection
+  showWelcomeMessage();
   rl.prompt();
 });
 
 client.on('data', (data) => {
   const serverResponse = data.toString();
   console.log('\nServer Response:');
-  
   try {
     const jsonResponse = JSON.parse(serverResponse);
-    // Use console.table for successful LIST commands
     if (jsonResponse.status === 'SUCESSO' && Array.isArray(jsonResponse.dados)) {
-        console.table(jsonResponse.dados);
+      console.table(jsonResponse.dados);
     } else {
-        console.log(jsonResponse);
+      console.log(jsonResponse);
     }
   // eslint-disable-next-line no-unused-vars
   } catch (_err) {
-    // Fallback for non-JSON responses
     console.log(serverResponse);
   }
   rl.prompt();
@@ -69,54 +78,51 @@ client.on('close', () => {
 });
 
 client.on('error', (err) => {
+  if (!isConnected) {
+    showWelcomeMessage();
+  }
   handleError('CONNECTION_ERROR', err);
-  // If connection fails on start, rl might not be available.
-  if (rl) {
-    rl.close();
+  if (!isConnected) {
+    rl.prompt();
   }
 });
 
 // --- Readline Event Handler ---
-
 rl.on('line', (line) => {
-  const command = line.trim().toUpperCase();
+  const input = line.trim();
+  const commandUpper = input.split(' ')[0].toUpperCase();
 
-  // --- Handle Client-Side Commands First ---
-  if (command === 'EXIT') {
+  if (commandUpper === 'HELP') {
+    showCommandTutorial();
+    rl.prompt();
+    return;
+  }
+  if (commandUpper === 'CLEAR') {
+    showWelcomeMessage();
+    rl.prompt();
+    return;
+  }
+  if (commandUpper === 'EXIT') {
     console.log('Disconnecting...');
     client.end();
     rl.close();
     return;
   }
-  
-  if (command === 'CLEAR') {
-    console.clear();
-    rl.prompt();
-    return;
-  }
 
-  if (command === 'HELP') {
-    displayHelp();
-    rl.prompt();
-    return;
-  }
+  const result = processUserInput(input);
 
-  // --- Process and Send Server-Side Commands ---
-  const validation = processUserInput(line);
-
-  if (validation.success) {
-    client.write(line.trim());
-  } else if (validation.errorCode) {
-    handleError(validation.errorCode);
+  if (result.success) {
+    console.log(`[DEBUG] Command formatted: "${result.commandToSend.trim()}"`);
+    client.write(result.commandToSend);
+  } else if (result.errorCode) {
+    handleError(result.errorCode);
     rl.prompt();
   } else {
-    // Handle empty line case
     rl.prompt();
   }
 });
 
 // --- Initial Connection ---
-console.log('Connecting to server...');
-client.connect(PORT, HOST, () => {
-  // Connection listener is handled by the 'connect' event
-});
+console.log('Attempting to connect to the server...');
+console.log('\nAgradecemos por usar a Agenda Distribuída! Até a próxima. 👋');
+client.connect(PORT, HOST);

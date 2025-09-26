@@ -78,12 +78,30 @@ function handleAdd(fullCommand, socket) {
 }
 
 function handleList(fullCommand, socket) {
-    // ... (logic for handleList is the same, no need to save)
     const parts = fullCommand.split(' ');
-    const filterDate = parts[1];
+    const filterArgument = parts[1];
+
     let results = appointments;
-    if (filterDate) results = appointments.filter(app => app.date === filterDate);
-    if (results.length === 0) return sendResponse(socket, 'SUCESSO', [], 'No appointments found for the specified criteria.');
+
+    if (filterArgument && filterArgument.toUpperCase() !== 'ALL') {
+        try {
+            const [fYear, fMonth, fDay] = filterArgument.split('-').map(Number);
+
+            results = appointments.filter(app => {
+                const [aYear, aMonth, aDay] = app.date.split('-').map(Number);
+                
+                // CORREÇÃO AQUI 👇
+                return aYear === fYear && aMonth === fMonth && aDay === fDay;
+            });
+        // eslint-disable-next-line no-unused-vars
+        } catch (e) {
+            results = [];
+        }
+    }
+
+    if (results.length === 0) {
+        return sendResponse(socket, 'SUCESSO', [], 'No appointments found for the specified criteria.');
+    }
     sendResponse(socket, 'SUCESSO', results, `${results.length} appointment(s) found.`);
 }
 
