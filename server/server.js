@@ -78,12 +78,15 @@ function handleAdd(fullCommand, socket) {
 }
 
 function handleList(fullCommand, socket) {
-    const parts = fullCommand.split(' ');
-    const filter = parts[1] ? parts[1].toUpperCase() : null; 
+    const parts = fullCommand.split(' '); 
+    const filterArgument = parts[1];
+
     let results = appointments;
-    if (filter && filter !== 'ALL') {
-        results = appointments.filter(app => app.date === filter);
+
+    if (filterArgument && filterArgument.toUpperCase() !== 'ALL') {
+        results = appointments.filter(app => app.date === filterArgument);
     }
+
     if (results.length === 0) {
         return sendResponse(socket, 'SUCESSO', [], 'No appointments found for the specified criteria.');
     }
