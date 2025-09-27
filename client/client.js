@@ -2,39 +2,7 @@ import { Socket } from 'net';
 import { createInterface } from 'readline';
 import { processUserInput } from './commandHandler.js';
 import { handleError } from './errorHandler.js';
-
-// --- Display Functions ---
-function showWelcomeMessage() {
-  console.clear();
-  console.log("---------------------------------------------------------------------");
-  console.log(" Disciplina: Plataformas de Distribuição - UFPE (2025.2)");
-  console.log(" Professor: Nelson Souto (nsr@cin.ufpe.br)");
-  console.log(" Autores: Samara Silvia (sssc@cin.ufpe.br)");
-  console.log("          Rodolfo Marinho (armc2@cin.ufpe.br)");
-  console.log("\n Título: Agenda de Compromissos Distribuída v1.0");
-  console.log("\n Descrição:");
-  console.log("   Esta é uma aplicação de linha de comando (CLI) que atua como um");
-  console.log("   cliente para um sistema de agenda compartilhada. Ela se comunica");
-  console.log("   via Sockets TCP com um servidor para manipular eventos em tempo real.");
-  console.log("\n Comandos disponíveis:");
-  console.log("   - HELP         (Veja a lista completa de comandos e seus formatos)");
-  console.log("   - CLEAR        (Limpe a tela do terminal)");
-  console.log("   - EXIT         (Encerre a aplicação)");
-  console.log("---------------------------------------------------------------------");
-}
-
-function showCommandTutorial() {
-  console.log("\n---------- Guia de Comandos da Agenda ----------");
-  console.log('\n➡️  ADD <data> <hora> <duração> "<título>" "[descrição]"');
-  console.log('    Ex: add 2025-09-26 10:00 60min "Reunião de Projeto"');
-  console.log('\n➡️  LIST <data | ALL>');
-  console.log('    Ex: list 2025-09-26');
-  console.log('\n➡️  UPDATE <id> <campo> "<novo_valor>"');
-  console.log('    Ex: update 42 titulo "Título da Reunião Atualizado"');
-  console.log('\n➡️  DELETE <id>');
-  console.log('    Ex: delete 42');
-  console.log("------------------------------------------------");
-}
+import { showConnectionAnimation, showWelcomeMessage, showCommandTutorial, showGoodbyeScreen } from './messages.js';
 
 // --- Configuration ---
 const HOST = '127.0.0.1';
@@ -49,8 +17,10 @@ rl.setPrompt('\n> ');
 // --- Client Event Handlers ---
 client.on('connect', () => {
   isConnected = true;
-  showWelcomeMessage();
-  rl.prompt();
+   showConnectionAnimation(() => {
+    showWelcomeMessage();
+    rl.prompt();
+  });
 });
 
 client.on('data', (data) => {
@@ -103,8 +73,7 @@ rl.on('line', (line) => {
     return;
   }
   if (commandUpper === 'EXIT') {
-    console.log('Disconnecting...');
-    console.log('\nAgradecemos por usar a Agenda Distribuída! Até a próxima. 👋');
+    showGoodbyeScreen();
     client.end();
     rl.close();
     return;
