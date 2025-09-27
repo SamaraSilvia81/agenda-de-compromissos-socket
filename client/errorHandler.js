@@ -4,28 +4,27 @@
  * @param {Error} [originalError=null] The original error object for debugging.
  */
 export function handleError(errorCode, originalError = null) {
-  let userMessage = `❌ Erro inesperado.`; // Default message
+  let userMessage = `❌ Unexpected error.`; // Default message
 
   switch (errorCode) {
     case 'INVALID_COMMAND':
-      userMessage = `❌ Comando inválido. Use um dos comandos conhecidos.`;
+      userMessage = `❌ Invalid command. Please use one of the recognized commands.`;
       break;
     case 'INVALID_ADD_FORMAT':
-      userMessage = '❌ Formato incorreto. Use: ADD <data> <hora> <duração> "<título>" "[descrição]"';
+      userMessage = '❌ Incorrect format. Use: ADD <date> <time> <duration> "<title>" "[description]"';
       break;
     case 'INVALID_LIST_FORMAT':
-      userMessage = '❌ Formato incorreto. Use: LIST, LIST <date>, ou LIST ALL';
+      userMessage = '❌ Incorrect format. Use: LIST, LIST <date>, or LIST ALL';
       break;
     case 'INVALID_UPDATE_FORMAT':
-      userMessage = '❌ Formato incorreto. Use: UPDATE <id> <field> "<new_value>"';
+      userMessage = '❌ Incorrect format. Use: UPDATE <id> <field> "<new_value>"';
       break;
     case 'INVALID_DELETE_FORMAT':
-      userMessage = '❌ Formato incorreto. Use: DELETE <id>';
+      userMessage = '❌ Incorrect format. Use: DELETE <id>';
       break;
     case 'CONNECTION_ERROR':
-      userMessage = `❌ Erro de conexão: ${originalError.message}`;
+      userMessage = `❌ Connection error: ${originalError.message}`;
       break;
-    
   }
 
   console.error(userMessage);
