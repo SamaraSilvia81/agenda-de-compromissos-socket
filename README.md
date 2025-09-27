@@ -1,4 +1,15 @@
+![TCP Socket Appointment Scheduler](banner.png)
+
 # TCP Socket Appointment Scheduler
+![Badge Concluído](https://img.shields.io/static/v1?label=STATUS&message=Concluído&color=af0421&style=for-the-badge)
+
+This is an academic project developed for the **Plataformas de Distribuição UFPE, 2025.2** course, taught by Professor **Nelson Souto Rosa**. The objective was to build a client-server application in Node.js to manage a real-time appointment schedule using TCP sockets.
+
+### Authors
+* **Rodolfo Marinho:** `[armc@cin.ufpe.br]`
+* **Samara Sabino:** `[sssc@cin.ufpe.br]`
+
+## Description
 
 This project is a client-server application built with Node.js that uses TCP sockets to manage a real-time, shared appointment schedule. The server maintains a list of events, and multiple clients can connect to add, list, update, and remove appointments.
 
@@ -47,65 +58,29 @@ Appointment data is persisted to an `appointments.json` file on the server-side,
     ```
     After connecting, a `>` prompt will appear, ready to receive your commands.
 
+<div style="text-align: center; font-family: monospace; white-space: pre;">
+╭──────────────────────────────────────────────────╮
+│                                                  │
+│         [~] Initializing SOCKET-TCP...           │
+│         [✓] Connection Established.              │
+│         [»] Listening for commands...            │
+│                                                  │
+╰──────────────────────────────────────────────────╯
+</div>
+
 ## Available Commands
 
-Commands must be entered into the client terminal. Arguments containing spaces (such as title and description) must be enclosed in double quotes.
+All commands must be entered into the client terminal. Arguments containing spaces (such as title and description) must be enclosed in double quotes (`"`).
 
----
+| Command | Description | Format & Example |
+| :--- | :--- | :--- |
+| `ADD` | Adds a new appointment to the schedule. | **Format:**<br>`ADD <date> <time> <duration_min> "<title>" "[optional_description]"`<br><br>**Example:**<br>```> ADD 2025-10-26 15:00 90 "Project Sync" "Discuss milestones"``` |
+| `LIST` | Lists all appointments or filters by a specific date. | **Format:**<br>`LIST` or `LIST <date>`<br><br>**Example:**<br>```> LIST\n> LIST 2025-10-26``` |
+| `UPDATE` | Updates a specific field of an existing appointment, identified by its `id`.<br><br>**Updatable fields:**<br>`date`, `time`, `duration`, `title`, `description`. | **Format:**<br>`UPDATE <id> <field> "<new_value>"`<br><br>**Example:**<br>```> UPDATE 1 title "General Project Sync Meeting"``` |
+| `DELETE` | Removes an appointment from the schedule, identified by its `id`. | **Format:**<br>`DELETE <id>`<br><br>**Example:**<br>```> DELETE 2``` |
 
-### **ADD**
-
-Adds a new appointment to the schedule.
-
-**Format:**
-`ADD <date> <time> <duration_min> "<title>" "[optional_description]"`
-
-**Example:**
-```
-> ADD 2025-10-26 15:00 90 "Project Sync Meeting" "Discuss next project milestones"
-```
-
----
-
-### **LIST**
-
-Lists appointments. Can be used to list all events or filter by a specific date.
-
-**Format:**
-`LIST` or `LIST <date>`
-
-**Examples:**
-```
-> LIST
-> LIST 2025-10-26
-```
-
----
-
-### **UPDATE**
-
-Updates a specific field of an existing appointment, identified by its `id`.
-
-**Format:**
-`UPDATE <id> <field> "<new_value>"`
-
-**Updatable fields:** `date`, `time`, `duration`, `title`, `description`.
-
-**Example:**
-```
-> UPDATE 1 title "General Project Sync Meeting"
-```
-
----
-
-### **DELETE**
-
-Removes an appointment from the schedule, identified by its `id`.
-
-**Format:**
-`DELETE <id>`
-
-**Example:**
-```
-> DELETE 2
-```
+<div style="text-align: center; font-family: monospace; white-space: pre;">
+  <a href="https://git.io/typing-svg">
+    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&color=c92c36&width=435&lines=Thanks%20for%20your%20attention!">
+  </a>
+</div>
