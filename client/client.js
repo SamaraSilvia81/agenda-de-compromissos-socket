@@ -10,7 +10,7 @@ function showWelcomeMessage() {
   console.log(" Disciplina: Plataformas de Distribuição - UFPE (2025.2)");
   console.log(" Professor: Nelson Souto (nsr@cin.ufpe.br)");
   console.log(" Autores: Samara Silvia (sssc@cin.ufpe.br)");
-  console.log("          Rodolfo Machado (armc2@cin.ufpe.br)");
+  console.log("          Rodolfo Marinho (armc2@cin.ufpe.br)");
   console.log("\n Título: Agenda de Compromissos Distribuída v1.0");
   console.log("\n Descrição:");
   console.log("   Esta é uma aplicação de linha de comando (CLI) que atua como um");
